@@ -1,0 +1,353 @@
+{%- doc -%}
+  Custom, standalone "Add to cart" button block.
+
+  Self-contained: it renders its own product form + add-to-cart component, so it
+  works anywhere a product is in context (product pages, product cards, etc.)
+  WITHOUT touching the theme's original add-to-cart block/snippet.
+
+  Lets the merchant customise the button text and icon (like the button block).
+{%- enddoc -%}
+
+{% liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+
+  assign variant = product.selected_or_first_available_variant
+
+  assign can_add_to_cart = false
+  assign state_text = 'products.product.unavailable' | t
+  if variant
+    if variant.available
+      assign can_add_to_cart = true
+      assign state_text = 'products.product.add_to_cart' | t
+    else
+      assign state_text = 'products.product.sold_out' | t
+    endif
+  endif
+
+  # Custom label: used when set and the product can be added.
+  # Sold out / unavailable keep their dynamic localized text.
+  assign button_text = state_text
+  if can_add_to_cart and block.settings.label != blank
+    assign button_text = block.settings.label
+  endif
+
+  # Custom icon (mirrors the button block)
+  assign has_custom_icon = false
+  if block.settings.icon != blank and block.settings.icon != 'none'
+    assign has_custom_icon = true
+  endif
+  if block.settings.icon_image != blank
+    assign has_custom_icon = true
+  endif
+  assign icon_position = block.settings.icon_position | default: 'before'
+  assign icon_size = block.settings.icon_size | default: 18
+  assign icon_gap = block.settings.icon_gap | default: 8
+
+  # Include product.id so IDs stay unique when the same static block repeats per card in a grid
+  assign product_form_id = 'CustomAddToCart-Form-' | append: section.id | append: '-' | append: block.id | append: '-' | append: product.id
+  assign button_id = 'CustomAddToCart-Submit-' | append: block.id | append: '-' | append: product.id
+%}
+
+{%- capture custom_icon_markup -%}
+  {%- if has_custom_icon -%}
+    {%- render 'icon-or-image',
+      icon: block.settings.icon,
+      image_upload: block.settings.icon_image,
+      width: icon_size,
+      class_name: 'custom-atc__icon'
+    -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+<div
+  class="custom-add-to-cart size-style spacing-style {{ block.settings.custom_class }}"
+  style="
+    {% render 'size-style', settings: block.settings %}
+    {% render 'spacing-style', settings: block.settings %}
+    --add-to-cart-font-case: {{ settings.button_text_case }};
+  "
+  {{ block.shopify_attributes }}
+>
+  {%- if product != blank -%}
+    <product-form-component
+      data-section-id="{{ section.id }}"
+      data-product-id="{{ product.id }}"
+      data-product-url="{{ product.url }}"
+      on:submit="/handleSubmit"
+    >
+      <div
+        class="visually-hidden"
+        aria-live="assertive"
+        role="status"
+        aria-atomic="true"
+        ref="liveRegion"
+      ></div>
+
+      {%- form 'product', product, id: product_form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+        <input
+          type="hidden"
+          name="id"
+          ref="variantId"
+          value="{{ variant.id }}"
+          {% if variant.available == false %}disabled{% endif %}
+        >
+        <input
+          type="hidden"
+          name="quantity"
+          value="{% if variant.quantity_rule.min %}{{ variant.quantity_rule.min }}{% else %}1{% endif %}"
+        >
+
+        <add-to-cart-component
+          ref="addToCartButtonContainer"
+          data-add-to-cart-animation="{{ settings.add_to_cart_animation }}"
+        >
+          <button
+            id="{{ button_id }}"
+            type="submit"
+            name="add"
+            ref="addToCartButton"
+            on:click="/handleClick"
+            class="button add-to-cart-button custom-add-to-cart__button {{ block.settings.style_class }}{% if has_custom_icon %} custom-add-to-cart__button--with-icon{% endif %}"
+            data-testid="custom-add-to-cart"
+            {% unless can_add_to_cart %}disabled{% endunless %}
+          >
+            <span
+              class="add-to-cart-text"
+              {% if has_custom_icon %}style="gap: {{ icon_gap }}px;"{% endif %}
+            >
+              {%- if has_custom_icon and icon_position == 'before' -%}{{ custom_icon_markup }}{%- endif -%}
+              <span class="add-to-cart-text__content">
+                <span>
+                  <span>{{ button_text }}</span>
+                </span>
+              </span>
+              {%- if has_custom_icon and icon_position == 'after' -%}{{ custom_icon_markup }}{%- endif -%}
+            </span>
+            {% comment %} checkmark burst shown after a successful add {% endcomment %}
+            <span class="add-to-cart__added">
+              <span class="svg-wrapper add-to-cart__added-icon">
+                {{- 'icon-checkmark-burst.svg' | inline_asset_content -}}
+              </span>
+            </span>
+          </button>
+        </add-to-cart-component>
+      {%- endform -%}
+    </product-form-component>
+  {%- else -%}
+    <button type="button" class="button custom-add-to-cart__button {{ block.settings.style_class }}" disabled>
+      {{ button_text }}
+    </button>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  /* Let the width setting (fit-content / fill / custom) flow down to the button */
+  .custom-add-to-cart product-form-component,
+  .custom-add-to-cart .shopify-product-form,
+  .custom-add-to-cart add-to-cart-component {
+    display: block;
+    width: 100%;
+  }
+
+  .custom-add-to-cart__button {
+    width: 100%;
+    /* Positioning context so the success checkmark (.add-to-cart__added, which is
+       position:absolute) centers INSIDE the button. The native button gets this
+       from an id-prefixed rule in base.css that our custom id doesn't match. */
+    position: relative;
+  }
+
+  .custom-add-to-cart__button--with-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .custom-atc__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Custom add to cart",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Standalone add-to-cart button. Place it inside a product section/card. You can customise the text and icon."
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Button text",
+      "info": "Leave blank to use the default \"Add to cart\" text.",
+      "default": "Add to cart"
+    },
+    {
+      "type": "select",
+      "id": "style_class",
+      "label": "t:settings.style",
+      "options": [
+        { "value": "button", "label": "t:options.primary" },
+        { "value": "button-secondary", "label": "t:options.secondary" }
+      ],
+      "default": "button"
+    },
+    {
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "t:settings.icon",
+      "options": [
+        { "value": "none", "label": "t:options.none" },
+        { "value": "apple", "label": "t:options.apple" },
+        { "value": "arrow", "label": "t:options.arrow" },
+        { "value": "banana", "label": "t:options.banana" },
+        { "value": "bottle", "label": "t:options.bottle" },
+        { "value": "box", "label": "t:options.box" },
+        { "value": "carrot", "label": "t:options.carrot" },
+        { "value": "chat_bubble", "label": "t:options.chat_bubble" },
+        { "value": "check_box", "label": "t:options.check_box" },
+        { "value": "clipboard", "label": "t:options.clipboard" },
+        { "value": "dairy", "label": "t:options.dairy" },
+        { "value": "dairy_free", "label": "t:options.dairy_free" },
+        { "value": "dryer", "label": "t:options.dryer" },
+        { "value": "eye", "label": "t:options.eye" },
+        { "value": "fire", "label": "t:options.fire" },
+        { "value": "gluten_free", "label": "t:options.gluten_free" },
+        { "value": "heart", "label": "t:options.heart" },
+        { "value": "iron", "label": "t:options.iron" },
+        { "value": "leaf", "label": "t:options.leaf" },
+        { "value": "leather", "label": "t:options.leather" },
+        { "value": "lightning_bolt", "label": "t:options.lightning_bolt" },
+        { "value": "lipstick", "label": "t:options.lipstick" },
+        { "value": "lock", "label": "t:options.lock" },
+        { "value": "map_pin", "label": "t:options.map_pin" },
+        { "value": "nut_free", "label": "t:options.nut_free" },
+        { "value": "pants", "label": "t:options.pants" },
+        { "value": "paw_print", "label": "t:options.paw_print" },
+        { "value": "pepper", "label": "t:options.pepper" },
+        { "value": "perfume", "label": "t:options.perfume" },
+        { "value": "plane", "label": "t:options.plane" },
+        { "value": "plant", "label": "t:options.plant" },
+        { "value": "price_tag", "label": "t:options.price_tag" },
+        { "value": "question_mark", "label": "t:options.question_mark" },
+        { "value": "recycle", "label": "t:options.recycle" },
+        { "value": "return", "label": "t:options.return" },
+        { "value": "ruler", "label": "t:options.ruler" },
+        { "value": "serving_dish", "label": "t:options.serving_dish" },
+        { "value": "shirt", "label": "t:options.shirt" },
+        { "value": "shoe", "label": "t:options.shoe" },
+        { "value": "silhouette", "label": "t:options.silhouette" },
+        { "value": "bluesky", "label": "t:options.social_bluesky" },
+        { "value": "facebook", "label": "t:options.social_facebook" },
+        { "value": "instagram", "label": "t:options.social_instagram" },
+        { "value": "linkedin", "label": "t:options.social_linkedin" },
+        { "value": "pinterest", "label": "t:options.social_pinterest" },
+        { "value": "snapchat", "label": "t:options.social_snapchat" },
+        { "value": "spotify", "label": "t:options.social_spotify" },
+        { "value": "threads", "label": "t:options.social_threads" },
+        { "value": "tiktok", "label": "t:options.social_tiktok" },
+        { "value": "tumblr", "label": "t:options.social_tumblr" },
+        { "value": "twitter", "label": "t:options.social_twitter" },
+        { "value": "vimeo", "label": "t:options.social_vimeo" },
+        { "value": "youtube", "label": "t:options.social_youtube" },
+        { "value": "whatsapp", "label": "t:options.social_whatsapp" },
+        { "value": "snowflake", "label": "t:options.snowflake" },
+        { "value": "star", "label": "t:options.star" },
+        { "value": "stopwatch", "label": "t:options.stopwatch" },
+        { "value": "truck", "label": "t:options.truck" },
+        { "value": "washing", "label": "t:options.washing" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_image",
+      "label": "Custom icon image",
+      "info": "Overrides the icon dropdown above when set."
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 8,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "icon_position",
+      "label": "Icon position",
+      "options": [
+        { "value": "before", "label": "Before text" },
+        { "value": "after", "label": "After text" }
+      ],
+      "default": "before"
+    },
+    {
+      "type": "range",
+      "id": "icon_gap",
+      "label": "Gap between icon and text",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "t:content.size"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:settings.width_desktop",
+      "options": [
+        { "value": "fit-content", "label": "t:options.fit_content" },
+        { "value": "fill", "label": "t:options.fill" },
+        { "value": "custom", "label": "t:options.custom" }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "t:settings.custom_width",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "CSS"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom CSS class",
+      "info": "Add your own class name(s), space-separated, to target this block in CSS."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom add to cart",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

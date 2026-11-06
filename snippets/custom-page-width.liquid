@@ -1,0 +1,14 @@
+{% comment %}
+  Applies the manual "Custom page width" theme setting (settings.page_width_custom).
+  Overrides the preset (narrow/normal/wide) content width while keeping the
+  theme's margin/grid logic intact. Default: 1272px, adjustable in 2px steps.
+{% endcomment %}
+{% style %}
+  .page-width-narrow,
+  .page-width-normal,
+  .page-width-wide,
+  .page-width-content {
+    --page-content-width: {{ settings.page_width_custom | default: 1272 }}px;
+    --page-width: calc(var(--page-content-width) + (var(--page-margin) * 2));
+  }
+{% endstyle %}

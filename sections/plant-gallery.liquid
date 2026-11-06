@@ -1,0 +1,123 @@
+
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="
+    section
+    section--{{ section.settings.section_width }}
+    color-{{ section.settings.color_scheme }}
+    plant-gallery
+    spacing-style
+  "
+  style="
+    {%- render 'spacing-style', settings: section.settings %}
+    --pg-section-gap: {{ section.settings.block_spacing }}px;
+  "
+  data-testid="plant-gallery-section"
+>
+  <div class="plant-gallery__inner">
+    {% content_for 'blocks' %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Plant gallery",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "Page"
+        },
+        {
+          "value": "full-width",
+          "label": "Full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "block_spacing",
+      "label": "Spacing between blocks",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_plant-collage-card"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Plant gallery",
+      "category": "Storytelling",
+      "blocks": {
+        "collage": {
+          "type": "_plant-collage-card",
+          "blocks": {
+            "image_1": { "type": "image" },
+            "image_2": { "type": "image" },
+            "image_3": { "type": "image" },
+            "image_4": { "type": "image" },
+            "image_5": { "type": "image" }
+          },
+          "block_order": ["image_1", "image_2", "image_3", "image_4", "image_5"]
+        }
+      },
+      "block_order": ["collage"]
+    }
+  ]
+}
+{% endschema %}

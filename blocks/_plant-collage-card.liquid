@@ -1,0 +1,90 @@
+
+
+{% comment %}
+  Plant collage card — a single block that contains ALL the collage images and
+  arranges them in the asymmetric mosaic. Add as many "Image" blocks inside as
+  you like; each image keeps its own "Corner radius" option. The mosaic rhythm
+  repeats every 5 images.
+{% endcomment %}
+
+{% assign s = block.settings %}
+
+<div
+  class="plant-collage"
+  style="
+    --pg-gap: {{ s.grid_gap }}px;
+    --pg-row-height: {{ s.row_height }}px;
+    --pg-row-height-mobile: {{ s.row_height_mobile }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+</div>
+
+{% schema %}
+{
+  "name": "Plant collage card",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "image"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Collage layout"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Gap between images",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "row_height",
+      "label": "Row height (desktop)",
+      "min": 120,
+      "max": 400,
+      "step": 5,
+      "unit": "px",
+      "default": 230
+    },
+    {
+      "type": "range",
+      "id": "row_height_mobile",
+      "label": "Row height (mobile)",
+      "min": 100,
+      "max": 320,
+      "step": 5,
+      "unit": "px",
+      "default": 170
+    }
+  ],
+  "presets": [
+    {
+      "name": "Plant collage card",
+      "category": "Storytelling",
+      "blocks": {
+        "image_1": { "type": "image" },
+        "image_2": { "type": "image" },
+        "image_3": { "type": "image" },
+        "image_4": { "type": "image" },
+        "image_5": { "type": "image" }
+      },
+      "block_order": ["image_1", "image_2", "image_3", "image_4", "image_5"]
+    }
+  ]
+}
+{% endschema %}

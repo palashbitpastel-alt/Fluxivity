@@ -1,0 +1,560 @@
+/*
+  Custom utility classes.
+  Add these to any section/block via the "Custom CSS class" field.
+  Multiple classes can be combined, e.g. "text-orange text-italic".
+*/
+
+/* Orange text color (#C2703F) — applies to the element and everything inside it */
+.text-orange,
+.text-orange * {
+  color: #C2703F !important;
+}
+
+/* Italic text — applies to the element and everything inside it */
+.text-italic,
+.text-italic * {
+  font-style: italic !important;
+}
+
+/*
+  Hero "image with text": let the section content extend from the page's
+  left content edge all the way to the right edge of the screen, so the image
+  bleeds to the right with no gap (text column stays aligned on the left).
+  Applied to the section tagged with the custom class "hero-section".
+  Desktop/tablet only — on mobile the section stacks and stays page-width.
+*/
+@media screen and (min-width: 750px) {
+.section.hero-section .group-block--width-custom.size-style {
+        min-width: 450px;
+    }
+  }
+@media screen and (min-width: 750px) {
+  .section.hero-section > * {
+    grid-column: 2 / 4;
+  }
+}
+
+
+/* ==========================Header Css ================== */
+#header-component :is(.menu-list:where(:has(.menu-list__list-item:hover)),.menu-list:where(:has(.menu-list__list-item:focus-within)),.menu-list:where(:has(.menu-list__list-item:not([aria-hidden=true]) .menu-list__link--active))) .menu-list__link{
+  color:#2a2a2a !important;
+  opacity: 1 !important;
+}
+
+#header-component .menu-list__link-title {
+    padding: 0 22px !important;
+}
+
+/* ========================== Hero title ================== */
+/* Add the custom class "hero-title" to the heading text block. */
+@media screen and (min-width: 750px) {
+  .hero-title,
+  .hero-title * {
+    font-weight: 400 !important;
+  }
+}
+
+/* The italicised accent word ("Growing") → orange */
+.hero-title em,
+.hero-title i {
+  color: #C2703F !important;
+  font-style: italic !important;
+}
+
+.section.hero-section .hero-title em{
+    margin-left: -7px;
+}
+
+.orange-btn{
+border-radius: 5px;
+background: #C2703F;
+color: #FFF;
+text-align: center;
+font-family: Cambria;
+font-size: 20px;
+font-style: normal;
+font-weight: 400;
+line-height: 16px; /* 80% */
+letter-spacing: 0.14px;
+}
+
+/* ========================== Header "Sign in" button ================== */
+/* Rendered (in snippets/header-actions.liquid) only when accounts are enabled
+   and the visitor is signed out, so it disappears once a customer logs in. */
+header-actions {
+  align-items: center;
+}
+
+.header-actions__sign-in {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: var(--gap-sm, 12px);
+  padding: 10px 30px;
+  border-radius: 8px;
+  background-color: #1b4332;
+  color: #ffffff;
+  font-family: 'Cambria', serif;
+  font-size: 18px;
+  line-height: 16px;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color var(--header-content-transition-timing, 0.2s ease);
+}
+
+.header-actions__sign-in:hover,
+.header-actions__sign-in:focus-visible {
+  background-color: #143528;
+  color: #ffffff;
+}
+
+@media screen and (max-width: 749px) {
+  .header-actions__sign-in {
+    display: none;
+  }
+}
+
+
+
+/* ================trasted-by section================ */
+/* .trasted-by .custom-section-background{
+height: 100%;
+background-color: #FAFAF7;
+width: 100%;
+position: absolute;
+top: 0;
+left: 0;
+} */
+.trasted-by .group-block-content .group-block .group-block-content .title p,
+.hero-main-collection-grid .section-title p {
+  color: #232524;
+  font-weight: 400;
+  letter-spacing: -0.22px;
+}
+.trasted-by .group-block-content .group-block .group-block-content .custom-font-size.description p{
+color: #6E726B;
+font-family: Cambria;
+font-size: 16px;
+font-style: normal;
+font-weight: 400;
+line-height: 22px; /* 137.5% */
+}
+.devider-right{
+position: relative;
+/* height: 100%; */
+}
+.devider-right:after{
+position: absolute;
+content: "";
+top: 0;
+right: 0;
+width: 1px;
+height: 100%;
+background: #A6B3AD;
+}
+
+.trasted-by .title-trusted-by p{
+color: #1B4332;
+text-align: center;
+font-style: normal;
+font-weight: 400;
+line-height: 19.2px; /* 80% */
+/* text-transform: uppercase; */
+}
+.trasted-by .custom-section-content>.section-content-wrapper{
+  flex-wrap: wrap !important;
+  /* Stretch all columns to equal height so the right-side dividers line up */
+  align-items: stretch !important;
+}
+
+/* Ensure each column actually fills the stretched row height */
+.trasted-by .custom-section-content>.section-content-wrapper>.group-block{
+  align-self: stretch !important;
+  height: auto !important;
+}
+
+/* ======================Colection section =============== */
+.hero-main-collection-grid .collection-card__content p{
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  background: rgba(22, 22, 22, 0.51);
+  backdrop-filter: blur(7px);
+  color:#ffffff !important;
+  padding: 5px 14px;
+}
+
+/* Card: rounded corners + smooth shadow transition */
+.hero-main-collection-grid .collection-card {
+  border-radius: 10px;
+  transition: box-shadow 0.35s ease;
+}
+
+/* Clip the zooming image to the card's rounded corners */
+.hero-main-collection-grid .collection-card__image {
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+/* The image itself animates its scale */
+.hero-main-collection-grid .collection-card__image .resource-image__image {
+  transition: transform 0.5s ease;
+  will-change: transform;
+}
+.hero-main-collection-grid .collection-card .collection-card__content{
+  position: relative;
+}
+.hero-main-collection-grid .collection-card .collection-card__content::before{
+  position: absolute;
+  content: "";
+  bottom:0;
+  left:0;
+  width: 100%;
+  height: 75px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+/* Hover: lift with a soft, layered box-shadow */
+.hero-main-collection-grid .collection-card:hover {
+box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+}
+.browse-btn{
+  color: #2A2A2A;
+font-size: 20px;
+font-style: normal;
+font-family: 'Cambria', serif !important;
+font-weight: 400;
+}
+/* Hover: zoom the image in */
+.hero-main-collection-grid .collection-card:hover .collection-card__image .resource-image__image {
+  transform: scale(1.08);
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-main-collection-grid .collection-card,
+  .hero-main-collection-grid .collection-card__image .resource-image__image {
+    transition: none;
+  }
+  .hero-main-collection-grid .collection-card:hover .collection-card__image .resource-image__image {
+    transform: none;
+  }
+}
+
+
+.priceContainer *{
+text-align: right;
+font-family: 'Cambria', serif !important;
+font-style: normal;
+font-weight: 400;
+}
+
+.product-badges .product-card__instock-badge{
+  backdrop-filter: blur(23.600000381469727px);
+  border-radius: 5px;
+padding-right: 4px;
+padding-left: 4px;
+font-family: 'Cambria', serif !important;
+font-weight: 400;
+font-style: normal;
+font-size: 14px;
+leading-trim: NONE;
+line-height: 14px;
+letter-spacing: 0px;
+color: #ffffff;
+}
+.price__regular .price{
+  font-family: 'Cambria', serif !important;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  leading-trim: NONE;
+  line-height: 24px;
+  letter-spacing: 0px;
+  text-align: right;
+}
+
+/* ====================== Fonts: product title + custom cart button ============= */
+/* Product title -> Georgia (the title is a <p>, which the global rule sets to
+   Cambria; this higher-specificity rule wins it back to Georgia). */
+[ref="productTitleLink"],
+[ref="productTitleLink"] p,
+[ref="productTitleLink"] :is(h1, h2, h3, h4, h5, h6) {
+  font-family: 'Georgia', serif !important;
+  font-weight: 400;
+}
+
+/* Custom add-to-cart button -> Cambria */
+.custom-add-to-cart__button,
+.custom-add-to-cart__button * {
+  font-family: 'Cambria', serif !important;
+  font-size: 18px;
+}
+
+/* ============================ Plant gallery section ============================
+   sections/plant-gallery.liquid holds one "Plant collage card" block
+   (blocks/_plant-collage-card.liquid). That single block contains ALL the image
+   blocks and arranges them in the asymmetric mosaic. Corner rounding is left to
+   each image block's own "Corner radius" option (blocks/image.liquid).
+   The section also accepts any other theme/app block (heading, text, etc.),
+   stacked vertically by .plant-gallery__inner. */
+.plant-gallery__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pg-section-gap, 32px);
+}
+
+.plant-collage {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: var(--pg-row-height, 230px);
+  grid-auto-flow: dense;
+  gap: var(--pg-gap, 24px);
+}
+
+.plant-collage > * {
+  height: 100%;
+  min-width: 0;
+}
+
+/* Mosaic rhythm — repeats every 5 images to match the design:
+   tall left, two small top, large 2x2, small bottom-left. */
+.plant-collage > :nth-child(5n + 1) {
+  grid-row: span 2;
+}
+
+.plant-collage > :nth-child(5n + 4) {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* Make image blocks (and placeholders) fill their mosaic cell */
+.plant-collage .image-block,
+.plant-collage image-block {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  aspect-ratio: auto;
+}
+
+.plant-collage .image-block__image,
+.plant-collage .placeholder-image,
+.plant-collage image-block img,
+.plant-collage .image-block__placeholder {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  aspect-ratio: auto;
+}
+
+@media screen and (max-width: 749px) {
+  .plant-collage {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: var(--pg-row-height-mobile, 170px);
+  }
+
+  /* Reset the mosaic spans so every image is a single 1x1 cell → exactly 2 per row */
+  .plant-collage > :nth-child(5n + 1),
+  .plant-collage > :nth-child(5n + 4) {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
+
+.social-media-btn{
+color: #1B4332;
+font-family: Cambria;
+font-size: 16px;
+min-width:130px;
+font-style: normal;
+font-weight: 400;
+line-height: 20px; /* 125% */
+text-align: left;
+justify-content: flex-start !important;
+}
+.divider-green-group .divider__line{
+ border-color:#1B4332;
+}
+.Homepage-accordion-faq-group{
+
+}
+/* ============================ Homepage FAQ accordion ============================
+   Styles the FAQ accordion to match the "Watsons Nurseries" Figma.
+   Scoped to the parent group's custom CSS class "Homepage-accordion-faq-group"
+   (add that class to the group via its "Custom CSS class" field).
+   Theme markup: blocks/accordion.liquid + blocks/_accordion-row.liquid
+   (.details > summary.details__header + .details-content). */
+
+/* Row dividers — 1px solid #ACACAC between questions */
+.Homepage-accordion-faq-group {
+  --color-border: #acacac;
+}
+
+.Homepage-accordion-faq-group .accordion--dividers accordion-custom:not(:first-child) .details {
+  border-block-start: 1px solid #acacac;
+}
+
+/* Question text — Georgia 18px, dark, 24px vertical padding */
+.Homepage-accordion-faq-group .details__header {
+  font-family: 'Georgia', serif !important;
+  font-weight: 400 !important;
+  font-size: 18px !important;
+  text-transform: none !important;
+  color: #232524 !important;
+  padding-block: 20px !important;
+  gap: 20px;
+line-height: 24.4px; /* 135.556% */
+letter-spacing: -0.18px;
+}
+
+/* Expand / collapse icon — orange, 20px */
+.Homepage-accordion-faq-group .details__header .svg-wrapper {
+  color: #c2703f;
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  min-height: 20px;
+}
+
+/* Answer text — Cambria 18px / 25.5px line-height, muted grey */
+.Homepage-accordion-faq-group .details-content,
+.Homepage-accordion-faq-group .details-content :is(p, li, span, a) {
+  font-family: 'Cambria', serif !important;
+  font-weight: 400 !important;
+  font-size: 18px !important;
+  line-height: 25.5px !important;
+  color: #6e726b !important;
+}
+
+.Homepage-accordion-faq-group .details-content {
+  padding-block: 0 20px !important;
+}
+
+/* FAQ icon: rotate the plus 45° into an "×" when open (instead of the theme's
+   default plus→minus). Requires the accordion block's Icon = Plus.
+   The plus SVG has two bars (.horizontal/.vertical); we keep BOTH visible and
+   rotate the whole icon, overriding base.css's per-bar plus→minus animation. */
+.Homepage-accordion-faq-group .details__header .icon-plus svg {
+  transition: transform var(--animation-speed, 0.2s) var(--animation-easing, ease);
+  transform: rotate(0deg);
+  transform-origin: center;
+}
+
+.Homepage-accordion-faq-group details[open] > summary .icon-plus svg {
+  transform: rotate(45deg);
+}
+
+/* Stop the default minus animation so both bars stay → a clean "×" */
+.Homepage-accordion-faq-group details[open] > summary .icon-plus .horizontal,
+.Homepage-accordion-faq-group details[open] > summary .icon-plus .vertical {
+  transform: rotate(0deg) !important;
+  opacity: 1 !important;
+}
+
+/* First row: no top divider/border and no top padding */
+.Homepage-accordion-faq-group .accordion--dividers accordion-custom:first-child .details {
+  border-block-start: 0 !important;
+}
+.Homepage-accordion-faq-group accordion-custom:first-child .details__header {
+  padding-block-start: 0 !important;
+}
+
+/* Last row: no bottom divider/border and no bottom padding */
+.Homepage-accordion-faq-group .accordion--dividers accordion-custom:last-child .details {
+  border-block-end: 0 !important;
+}
+.Homepage-accordion-faq-group accordion-custom:last-child .details__header,
+.Homepage-accordion-faq-group accordion-custom:last-child .details-content {
+  padding-block-end: 0 !important;
+}
+
+.menu-open>.menu-drawer, .menu-open>.menu-drawer__submenu:not(.menu-drawer__menu--childlist) {
+    background: #ffffff !important;
+}
+@media screen and (max-width:1024px) and (min-width:751px){
+  .trasted-by .devider-right{
+        max-width: 48.5%;
+        flex: 0 0 48.5%;
+        padding: 0;
+  }
+  .trasted-by .custom-section-content>.section-content-wrapper>.group-block {
+    padding: 0 !important;
+}
+  /* In the 2-column tablet layout, the right-column items sit at the row's edge,
+     so hide their right divider. */
+  .trasted-by .devider-right:nth-child(odd):after{
+        display: none;
+  }
+  .text-block.h2 > *{
+        font-size: 40px;
+  }
+  .text-block.h1 > *{
+        font-size: 50px;
+  }
+      .section.hero-section .group-block--width-custom.size-style {
+        min-width: unset;
+    }
+}
+@media screen and (max-width:750px){
+        .section.hero-section .group-block--width-custom.size-style {
+        min-width: unset;
+    }
+  .trasted-by .devider-right:after{
+        display: none;
+  }
+   .trasted-by .custom-section-content>.section-content-wrapper>.group-block {
+    padding: 0 !important;
+}
+  /* In the 2-column tablet layout, the right-column items sit at the row's edge,
+     so hide their right divider. */
+  .trasted-by .devider-right:nth-child(odd):after{
+        display: none;
+  }
+    .trasted-by .custom-section-content>.section-content-wrapper>.group-block {
+    padding: 0 !important;
+}
+ .trasted-by .devider-right {
+        max-width: 100%;
+        flex: 1;
+        padding: 0;
+    }
+  /* Keep the icon and its text side by side on mobile (mobile-column would
+     otherwise stack them). Targets the row that directly contains the icon. */
+  .trasted-by .group-block-content:has(> .icon-block){
+        flex-direction: row !important;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+.hero-section .group-block-content {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.text-block.h1>*{
+        font-size: 40px;
+        font-weight: 400;
+}
+.text-block.h2>*{
+        font-size: 30px;
+}
+.section.hero-section .hero-title em {
+    margin-left: 0;
+}
+  .hero-title,
+  .hero-title * {
+    font-weight: 400 !important;
+    /* Balance the line breaks so the title doesn't strand "you since 1929" */
+    text-wrap: balance !important;
+  }
+  .trade-wholesale-btn-block .group-block-content{
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+  .trade-wholesale-btn-block .group-block-content .button--with-icon {
+    padding: 14px 16px;
+}
+}

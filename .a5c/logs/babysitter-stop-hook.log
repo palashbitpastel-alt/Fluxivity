@@ -1,0 +1,11 @@
+[INFO] 2026-11-06T13:10:28Z Hook script invoked
+[INFO] 2026-11-06T13:10:28Z PLUGIN_ROOT=/home/palas/.claude/plugins/cache/a5c-ai/babysitter/4.0.152
+[INFO] 2026-11-06T13:10:28Z Hook input received (1678 bytes)
+[INFO] 2026-11-06T13:10:28.715Z handleHookRunStop started
+[INFO] 2026-11-06T13:10:28.721Z Hook input received
+[INFO] 2026-11-06T13:10:28.724Z [session=10e44c88-6792-4b72-b570-37c5d21a64d4] Session ID: 10e44c88-6792-4b72-b570-37c5d21a64d4
+[INFO] 2026-11-06T13:10:28.728Z [session=10e44c88-6792-4b72-b570-37c5d21a64d4] Resolved pluginRoot: /home/palas/.claude/plugins/cache/a5c-ai/babysitter/4.0.152
+[INFO] 2026-11-06T13:10:28.731Z [session=10e44c88-6792-4b72-b570-37c5d21a64d4] Resolved stateDir: /home/palas/.a5c/state
+[INFO] 2026-11-06T13:10:28.735Z [session=10e44c88-6792-4b72-b570-37c5d21a64d4] Checking session file at: /home/palas/.a5c/state/10e44c88-6792-4b72-b570-37c5d21a64d4.md
+[INFO] 2026-11-06T13:10:28.787Z [session=10e44c88-6792-4b72-b570-37c5d21a64d4] No run associated with session — allowing exit
+[INFO] 2026-11-06T13:10:28Z CLI exit code=0

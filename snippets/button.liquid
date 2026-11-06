@@ -1,0 +1,87 @@
+{%- doc -%}
+  Intended for use in a block similar to the button block.
+
+  @param {string} link - link to render
+  @param {object} [block] - The block
+
+  @example
+  {% render 'button', link: '/collections/all' %}
+{%- enddoc -%}
+
+{% assign block_settings = block.settings %}
+
+{% liquid
+  assign has_icon = false
+  if block_settings.icon != blank and block_settings.icon != 'none'
+    assign has_icon = true
+  endif
+  if block_settings.icon_image != blank
+    assign has_icon = true
+  endif
+
+  assign icon_size = block_settings.icon_size | default: 18
+  assign icon_position = block_settings.icon_position | default: 'after'
+  assign icon_gap = block_settings.icon_gap | default: 8
+%}
+
+{% capture button_icon %}
+  {% render 'icon-or-image',
+    icon: block_settings.icon,
+    image_upload: block_settings.icon_image,
+    width: icon_size,
+    class_name: 'button__icon'
+  %}
+{% endcapture %}
+
+<a
+  {% if link == blank %}
+    role="link"
+    aria-disabled="true"
+  {% else %}
+    href="{{ link }}"
+  {% endif %}
+  class="
+    size-style
+    {{ block_settings.style_class }}
+    {{ block_settings.style_class }}--{{ block.id }}
+    {% if has_icon %}button--with-icon{% endif %}
+    {{ block_settings.custom_class }}
+  "
+  style="{% render 'size-style', settings: block_settings %}{% if has_icon %} --button-icon-gap: {{ icon_gap }}px;{% endif %}"
+  {%- if block_settings.open_in_new_tab -%}
+    target="_blank"
+    rel="noopener noreferrer"
+  {%- endif -%}
+  {{ block.shopify_attributes }}
+>
+  {%- if has_icon and icon_position == 'before' -%}{{ button_icon }}{%- endif -%}
+  {%- if block_settings.label != blank -%}
+    <span class="button__label">{{ block_settings.label }}</span>
+  {%- endif -%}
+  {%- if has_icon and icon_position == 'after' -%}{{ button_icon }}{%- endif -%}
+</a>
+
+{% stylesheet %}
+  .link {
+    text-decoration: none;
+    text-decoration-color: currentcolor;
+
+    &:hover {
+      color: var(--color-primary-hover);
+      text-decoration-color: transparent;
+    }
+  }
+
+  .button--with-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--button-icon-gap, 8px);
+  }
+
+  .button__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+{% endstylesheet %}
